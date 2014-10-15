@@ -1,8 +1,11 @@
 # Document:
 # http://simiki.org/docs/configuration.html
 
-url: 
-title: 
-keywords: 
-description: 
-author: 
+url: http://wiki.s-feng.com 
+title: Wiki of S'Feng
+keywords: wiki, markdown, mac, linux, iOS, Android, Objective-C, swift, mobile, shell, python
+description: "Song Frank's personal wiki, powered by simiki and markdown. Focus on iOS, Android, Dev-Ops and so on"
+author: S'Feng
+
+theme: sfsimple
+
