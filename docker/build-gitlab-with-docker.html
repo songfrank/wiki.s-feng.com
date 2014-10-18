@@ -1,0 +1,92 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+        <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+        <title>基于docker搭建gitlab - Wiki of S'Feng</title>
+        <meta name="keywords" content="wiki, markdown, mac, linux, iOS, Android, Objective-C, swift, mobile, shell, python"/>
+        <meta name="description" content="Song Frank's personal wiki, powered by simiki and markdown. Focus on iOS, Android, Dev-Ops and so on"/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body>
+        <a href="https://github.com/songfrank/wiki.s-feng.com"><img style="position: fixed; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
+        <!--
+        <div id="nav">
+            <ul>
+                <li><a href="http://tankywoo.com"></a></li>
+                <li><a href="">Github</a></li>
+                <li><a href="">Simiki</a></li>
+            </ul>
+        </div>
+        -->
+        <div id="container">
+            
+    <div id="header">
+        <div id="post-nav">
+            
+            <a href="/">Home</a> » <a href="/#docker">docker</a> » 基于docker搭建gitlab
+            
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    <div id="title">基于docker搭建gitlab</div>
+    <div id="content">
+        <h1 id="docker-gitlab">docker-gitlab</h1>
+<p>详细说明: <a href="https://github.com/sameersbn/docker-gitlab">https://github.com/sameersbn/docker-gitlab</a></p>
+<h1 id="_1">方案</h1>
+<ul>
+<li>link with docker redis</li>
+<li>link with docker PostgreSQL</li>
+<li>gitlab port 10080</li>
+<li>数据文件关联到host的文件系统下 /opt/gitlab/data</li>
+<li>smtp使用google，注册gmail邮箱sf.github@gmail.com</li>
+<li>可以login with github帐号</li>
+</ul>
+<h1 id="step">Step</h1>
+<div class="hlcode"><pre><span class="c"># pull gitlab image from docker hub</span>
+sudo docker pull sameersbn/gitlab:latest
+
+<span class="c"># pull postgresql image</span>
+docker pull sameersbn/postgresql:latest
+
+<span class="c"># run postgresql container</span>
+docker run --name<span class="o">=</span>postgresql -d <span class="se">\</span>
+  -e <span class="s1">&#39;DB_NAME=gitlabhq_production&#39;</span> -e <span class="s1">&#39;DB_USER=gitlab&#39;</span> -e <span class="s1">&#39;DB_PASS=password&#39;</span> <span class="se">\</span>
+  -v /opt/postgresql/data:/var/lib/postgresql <span class="se">\</span>
+  sameersbn/postgresql:latest
+
+<span class="c"># pull redis image</span>
+docker pull sameersbn/redis:latest
+
+<span class="c"># run redis container</span>
+docker run --name<span class="o">=</span>redis -d sameersbn/redis:latest
+
+<span class="c"># run gitlab container link with postgresql and redis contianers</span>
+docker run --name<span class="o">=</span>gitlab -d -h gitlab.s-feng.com <span class="se">\</span>
+  --link redis:redisio <span class="se">\</span>
+  --link postgresql:postgresql <span class="se">\</span>
+  -v /opt/gitlab/data:/home/git/data <span class="se">\</span>
+  -e <span class="s1">&#39;GITLAB_PORT=10080&#39;</span> -e <span class="s1">&#39;GITLAB_SSH_PORT=10022&#39;</span> <span class="se">\</span>
+  -p 10022:22 -p 10080:80 <span class="se">\</span>
+  -e <span class="s1">&#39;GITLAB_HOST=gitlab.s-feng.com&#39;</span> -e <span class="s1">&#39;GITLAB_EMAL=gitlab@gitlab.s-feng.com&#39;</span> <span class="se">\</span>
+  -e <span class="s1">&#39;SMTP_USER=sf.gitlab@gmail.com&#39;</span> -e <span class="s1">&#39;SMTP_PASS=$gmail_pass&#39;</span> <span class="se">\</span>
+  -e <span class="s1">&#39;OAUTH_GITHUB_API_KEY=6db7c6c996783f30bef0&#39;</span> <span class="se">\</span>
+  -e <span class="s1">&#39;OAUTH_GITHUB_APP_SECRET=8d51cefefb9e545edbe06b0af3b8238ff8abe255&#39;</span> <span class="se">\</span>
+sameersbn/gitlab:latest
+</pre></div>
+    </div>
+
+        </div>
+        <div id="footer">
+            <span>
+                Copyright © 2012-2014 S'Feng.
+                Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.
+            </span>
+        </div>
+		<script type="text/javascript">
+	var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+	document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F013e7e3987bb5360c894dc9d84a0d001' type='text/javascript'%3E%3C/script%3E"));
+</script>
+    </body>
+</html>
